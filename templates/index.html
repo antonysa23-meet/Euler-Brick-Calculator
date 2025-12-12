@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euler Brick Checker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Hidden data for JavaScript -->
+        <div style="display: none;" data-result="{{ 'true' if result else 'false' if result is not none else '' }}"
+             data-triple1="{{ parsed_triple1|join(',') if parsed_triple1 else '' }}"
+             data-triple2="{{ parsed_triple2|join(',') if parsed_triple2 else '' }}"></div>
+
+        <header>
+            <h1>Euler Brick Checker</h1>
+            <p class="subtitle">Check if two Pythagorean triples form faces of an Euler Brick</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="visualization-section">
+                    <div class="info-card">
+                        <h3>What is an Euler Brick?</h3>
+                        <p>An Euler Brick is a rectangular cuboid with integer dimensions where all face diagonals are also integers. Each Pythagorean triple represents a face diagonal and the two edges of that face.</p>
+                    </div>
+
+                    <div class="graph-container" id="graphContainer">
+                        <svg class="graph-svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
+                            <circle cx="300" cy="150" r="60" fill="rgba(102, 126, 234, 0.1)" stroke="#667eea" stroke-width="2"/>
+                            <text x="300" y="160" class="dimension-label" text-anchor="middle" font-size="16">📐</text>
+                            <text x="300" y="200" class="dimension-label" text-anchor="middle" font-size="14" fill="#718096">
+                                Enter two Pythagorean triples
+                            </text>
+                            <text x="300" y="220" class="dimension-label" text-anchor="middle" font-size="14" fill="#718096">
+                                to visualize the Euler Brick
+                            </text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <form method="POST" class="checker-form">
+            <div class="input-group">
+                <label for="triple1">First Pythagorean Triple</label>
+                <input type="text" id="triple1" name="triple1" value="{{ triple1 }}"
+                       placeholder="e.g., 44,117,125 or (44,117,125)" required>
+                <small>Enter three positive integers: a,b,c where a² + b² = c²</small>
+            </div>
+
+            <div class="input-group">
+                <label for="triple2">Second Pythagorean Triple</label>
+                <input type="text" id="triple2" name="triple2" value="{{ triple2 }}"
+                       placeholder="e.g., 117,240,267 or (117,240,267)" required>
+                <small>Enter three positive integers: x,y,z where x² + y² = z²</small>
+            </div>
+                </form>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="messages">
+                            {% for category, message in messages %}
+                                <div class="message {{ 'error' if category == 'error' else 'success' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                {% if result is not none %}
+                    <div class="result-section">
+                        <div class="result-card {{ 'success' if result else 'failure' }}">
+                            <h3>Result</h3>
+                            <div class="result-display">
+                                {% if result %}
+                                    <div class="success-icon">✓</div>
+                                    <p class="result-text">These triples <strong>DO</strong> form two faces of an Euler Brick!</p>
+                                {% else %}
+                                    <div class="failure-icon">✗</div>
+                                    <p class="result-text">These triples do <strong>NOT</strong> form two faces of an Euler Brick.</p>
+                                {% endif %}
+                            </div>
+                            <div class="triple-display">
+                                <span class="triple">{{ triple1 }}</span>
+                                <span class="connector">and</span>
+                                <span class="triple">{{ triple2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <footer>
+            <p>Based on the mathematical work of Paul Halcke (1719)</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
